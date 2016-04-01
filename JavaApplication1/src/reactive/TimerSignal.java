@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Andris
  */
-class TimerSignal<T> extends Signal<T>{
+public class TimerSignal<T> extends Signal<T>{
     
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     
