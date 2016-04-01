@@ -1,11 +1,11 @@
 package reactive;
 
-public enum Millisecs {
+public enum TimeUnitsEnum {
     MILLISECOND(1), SECOND(1000), MINUTE(60000), HOUR(360000);
     
     private final int val;
     
-    Millisecs(int val){
+    TimeUnitsEnum(int val){
         this.val = val;
     }
     
