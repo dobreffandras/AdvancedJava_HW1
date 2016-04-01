@@ -15,7 +15,13 @@ public class JavaApplication1 {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Signal<Integer> a = Signal.createSignal(1);
+        ConsoleReaderSignal reader = ConsoleReaderSignal.createConsoleReaderSignal();
+        Long startupTime = System.currentTimeMillis();
+        TimerSignal timer = Time.every(1, TimeUnitsEnum.SECOND, null);
+        timer.setAction(() -> {
+            System.out.println("Last line on input: "+reader.getValue()+
+                    ", time elapsed: "+(System.currentTimeMillis()-startupTime)/1000+"s");
+        });
     }
     
 }
