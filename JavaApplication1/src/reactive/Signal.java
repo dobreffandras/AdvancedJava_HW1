@@ -4,16 +4,16 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public class Signal<T> {
-    private T value;
+    protected T value;
     
-    private Runnable action;
+    protected Runnable action;
     
-    private Signal(T value){
+    protected Signal(T value){
         this.value = value;
     }
     
     public static <T> Signal<T> createSignal(T value){
-        return new Signal(value);
+        return new Signal<>(value);
     }
     
     public void setValue(T newValue){
