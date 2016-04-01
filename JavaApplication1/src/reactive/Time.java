@@ -11,8 +11,7 @@ package reactive;
  * @author Andris
  */
 public class Time {
-    public static <T> void every(T value, int milliseconds){
-        TimerSignal<T> signal = TimerSignal.createTimerSignal(value);
-        signal.setAction(() -> {});   
+    public static <T> void every(int timeAmount, TimeUnitsEnum timeUnit, T value){
+        TimerSignal<T> signal = TimerSignal.createTimerSignal(value, timeAmount*timeUnit.getVal());
     }
 }

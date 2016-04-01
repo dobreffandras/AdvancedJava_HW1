@@ -5,17 +5,28 @@
  */
 package reactive;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 /**
  *
  * @author Andris
  */
 class TimerSignal<T> extends Signal<T>{
     
-    protected TimerSignal(T value){
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    
+    protected TimerSignal(T value, int millisconds){
         super(value);
+        this.scheduler.scheduleAtFixedRate(() -> {
+            if(TimerSignal.this.action != null){
+                TimerSignal.this.action.run();
+            }
+        }, millisconds, millisconds, TimeUnit.MILLISECONDS);
     }
     
-    public static <T> TimerSignal<T> createTimerSignal(T value){
-        return new TimerSignal<>(value);
+    public static <T> TimerSignal<T> createTimerSignal(T value,int milliseconds){
+        return new TimerSignal<>(value, milliseconds);
     }
 }
