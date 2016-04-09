@@ -31,14 +31,47 @@ public class Signal<T> {
     }
     
     public <U> Signal<U> map(Function<T, U> function){
-        return new Signal(function.apply(this.value));
+        Signal newSignal = new Signal(function.apply(this.value));
+        Runnable oldAction = this.action;
+        this.action = () -> {
+            oldAction.run();
+            newSignal.setValue(function.apply(this.value));
+        };
+        return newSignal;
     }
     
-    public <U,R> Signal<R> map(Signal<U> other, BiFunction<T, U, R> function){
-        return new Signal<>(function.apply(this.value, other.value));
+    public <U,R> Signal<R> join(Signal<U> other, BiFunction<T, U, R> function){
+        Signal<R> newSignal = new Signal<>(function.apply(this.value, other.value));
+        
+        Runnable thisOldAction = this.action;
+        Runnable otherOldAction  = other.action;
+        
+        this.action = () -> {
+            thisOldAction.run();
+            newSignal.setValue(function.apply(this.value, other.value));
+        };
+        
+        other.action = () ->{
+            otherOldAction.run();
+            newSignal.setValue(function.apply(this.value, other.value));
+        };
+        
+        return newSignal;
     }
     
     public <U> Signal<U> accumulate(BiFunction<U, T, U> function, U startValue){
-        return new Signal<>(function.apply(startValue, this.value));
+        Signal<U> newSignal =  new Signal<>(null);
+        Runnable oldAction = this.action;
+        
+        this.action = () -> {
+            oldAction.run();
+            if(newSignal.getValue() == null){
+                newSignal.setValue(startValue);
+            }else{
+                newSignal.setValue(function.apply(newSignal.getValue(), this.value));
+            }
+        };
+        
+        return newSignal;
     }
 }
