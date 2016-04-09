@@ -20,7 +20,7 @@ public class ConsoleReaderSignal extends Signal<String>{
             Scanner scan = new Scanner(System.in);
             while (scan.hasNext()) {
                 String input = scan.nextLine();
-                this.value = input;
+                this.setValue(input);
             }
         }).start();
         

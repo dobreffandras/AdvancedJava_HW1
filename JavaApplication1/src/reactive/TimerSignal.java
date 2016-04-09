@@ -17,16 +17,26 @@ public class TimerSignal<T> extends Signal<T>{
     
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     
+    private Runnable scheduledAction;
+    
     protected TimerSignal(T value, int millisconds){
         super(value);
         this.scheduler.scheduleAtFixedRate(() -> {
-            if(TimerSignal.this.action != null){
-                TimerSignal.this.action.run();
+            if(TimerSignal.this.scheduledAction != null){
+                TimerSignal.this.scheduledAction.run();
             }
         }, millisconds, millisconds, TimeUnit.MILLISECONDS);
     }
     
     public static <T> TimerSignal<T> createTimerSignal(T value,int milliseconds){
         return new TimerSignal<>(value, milliseconds);
+    }
+    
+    public void setScheduledAction(Runnable action){
+        this.scheduledAction = action;
+    }
+    
+    public Runnable getScheduledAction(){
+        return this.scheduledAction;
     }
 }

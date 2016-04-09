@@ -6,8 +6,13 @@
 package reactive;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.io.Writer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -19,17 +24,36 @@ public class JavaApplication1 {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException {
-        
-        PrintWriter writer = new PrintWriter("output.txt", "UTF-8");
-        
-        ConsoleReaderSignal reader = ConsoleReaderSignal.createConsoleReaderSignal();
         Long startupTime = System.currentTimeMillis();
-        TimerSignal timer = Time.every(1, TimeUnitsEnum.SECOND, null);
-        timer.setAction(() -> {
-            writer.write("Last line on input: "+reader.getValue()+ 
-                    ", time elapsed: "+(System.currentTimeMillis()-startupTime)/1000+"s"+
-                    System.lineSeparator());
-            writer.flush();
+        System.out.println(startupTime);
+        Writer writer;
+        writer = new PrintWriter("output.txt", "UTF-8");
+        //writer = new OutputStreamWriter(System.out);
+        
+        ConsoleReaderSignal readerSignal = ConsoleReaderSignal.createConsoleReaderSignal();
+        
+        TimerSignal timerSignal = Time.every(1, TimeUnitsEnum.SECOND, 0);
+        timerSignal.setScheduledAction(() -> {
+            timerSignal.setValue((System.currentTimeMillis()-startupTime)/1000);
         });
+        
+        Signal<String> writerSignal = readerSignal.join(timerSignal, 
+                (val1, val2) -> {
+                    return "Last line on input: "+val1+ 
+                    ", time elapsed: "+val2+"s"+
+                    System.lineSeparator();
+                }
+        );
+        
+        writerSignal.setAction(() -> {
+            try {
+                writer.write(writerSignal.getValue());
+                writer.flush();
+            } catch (IOException ex) {
+                Logger.getLogger(JavaApplication1.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        
+        
     }
 }

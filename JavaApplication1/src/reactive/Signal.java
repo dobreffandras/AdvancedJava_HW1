@@ -46,15 +46,15 @@ public class Signal<T> {
         Runnable thisOldAction = this.action;
         Runnable otherOldAction  = other.action;
         
-        this.action = () -> {
-            thisOldAction.run();
-            newSignal.setValue(function.apply(this.value, other.value));
-        };
+        this.setAction(() -> {
+            if(thisOldAction != null) thisOldAction.run();
+            newSignal.setValue(function.apply(this.getValue(), other.getValue()));
+        });
         
-        other.action = () ->{
-            otherOldAction.run();
-            newSignal.setValue(function.apply(this.value, other.value));
-        };
+        other.setAction(() ->{
+            if(otherOldAction != null) otherOldAction.run();
+            newSignal.setValue(function.apply(this.getValue(), other.getValue()));
+        });
         
         return newSignal;
     }
