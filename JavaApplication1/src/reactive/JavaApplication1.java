@@ -24,18 +24,14 @@ public class JavaApplication1 {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException {
-        Long startupTime = System.currentTimeMillis();
-        System.out.println(startupTime);
+
         Writer writer;
-        writer = new PrintWriter("output.txt", "UTF-8");
-        //writer = new OutputStreamWriter(System.out);
+        //writer = new PrintWriter("output.txt", "UTF-8");
+        writer = new OutputStreamWriter(System.out);
         
         ConsoleReaderSignal readerSignal = ConsoleReaderSignal.createConsoleReaderSignal();
         
-        TimerSignal timerSignal = Time.every(1, TimeUnitsEnum.SECOND, 0);
-        timerSignal.setScheduledAction(() -> {
-            timerSignal.setValue((System.currentTimeMillis()-startupTime)/1000);
-        });
+        TimerSignal timerSignal = Time.every(1, TimeUnitsEnum.SECOND);
         
         Signal<String> writerSignal = readerSignal.join(timerSignal, 
                 (val1, val2) -> {

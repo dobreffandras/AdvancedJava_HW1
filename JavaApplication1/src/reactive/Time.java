@@ -11,7 +11,12 @@ package reactive;
  * @author Andris
  */
 public class Time {
-    public static <T> TimerSignal<T> every(int timeAmount, TimeUnitsEnum timeUnit, T value){
-        return TimerSignal.createTimerSignal(value, timeAmount*timeUnit.getVal());
+    public static TimerSignal<Long> every(int timeAmount, TimeUnitsEnum timeUnit){
+        TimerSignal<Long> timerSignal = TimerSignal.createTimerSignal(new Long(0), timeAmount*timeUnit.getVal());
+        Long startupTime = System.currentTimeMillis();
+        timerSignal.setScheduledAction(() -> {
+            timerSignal.setValue((System.currentTimeMillis()-startupTime)/1000);
+        });
+        return timerSignal;
     }
 }
