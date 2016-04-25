@@ -65,11 +65,7 @@ public class Signal<T> {
         
         this.action = () -> {
             if(oldAction != null) oldAction.run();
-            if(newSignal.getValue() == null){
-                newSignal.setValue(startValue);
-            }else{
-                newSignal.setValue(function.apply(newSignal.getValue(), this.value));
-            }
+            newSignal.setValue(function.apply(newSignal.getValue(), this.value));
         };
         
         return newSignal;
