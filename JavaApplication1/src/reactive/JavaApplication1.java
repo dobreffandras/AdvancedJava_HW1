@@ -22,26 +22,22 @@ public class JavaApplication1 {
 
     /**
      * @param args the command line arguments
+     * @throws FileNotFoundException
+     * @throws UnsupportedEncodingException
      */
     public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException {
 
         Writer writer;
-        //writer = new PrintWriter("output.txt", "UTF-8");
-        writer = new OutputStreamWriter(System.out);
+        writer = new PrintWriter("output.txt", "UTF-8");
+        //writer = new OutputStreamWriter(System.out);
         
-        ConsoleReaderSignal readerSignal = ConsoleReaderSignal.createConsoleReaderSignal();
-        
-        TimerSignal<Long> timerSignal = Time.every(1, TimeUnitsEnum.SECOND);
-        Signal<Integer> timeCounter = timerSignal.accumulate((c,x) -> c+1, 0);
-        Signal<String> writerSignal = readerSignal.join(timeCounter, 
+        Signal<Integer> timeCounter = Time.every(1, TimeUnitsEnum.SECOND).accumulate((c,x) -> c+1, 0);
+         ConsoleReaderSignal.createConsoleReaderSignal().join(timeCounter, 
                 (val1, val2) -> {
                     return "Last line on input: "+val1+ 
-                    ", time elapsed: "+val2+"s"+
-                    System.lineSeparator();
+                    ", time elapsed: "+val2+"s"+ System.lineSeparator();
                 }
-        );
-        
-        writerSignal.map((line) -> {
+        ).map((line) -> {
             try {
                 writer.write(line);
                 writer.flush();
