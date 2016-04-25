@@ -31,9 +31,9 @@ public class JavaApplication1 {
         
         ConsoleReaderSignal readerSignal = ConsoleReaderSignal.createConsoleReaderSignal();
         
-        TimerSignal timerSignal = Time.every(1, TimeUnitsEnum.SECOND);
-        
-        Signal<String> writerSignal = readerSignal.join(timerSignal, 
+        TimerSignal<Long> timerSignal = Time.every(1, TimeUnitsEnum.SECOND);
+        Signal<Integer> timeCounter = timerSignal.accumulate((c,x) -> c+1, 0);
+        Signal<String> writerSignal = readerSignal.join(timeCounter, 
                 (val1, val2) -> {
                     return "Last line on input: "+val1+ 
                     ", time elapsed: "+val2+"s"+

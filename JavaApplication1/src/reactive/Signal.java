@@ -60,11 +60,11 @@ public class Signal<T> {
     }
     
     public <U> Signal<U> accumulate(BiFunction<U, T, U> function, U startValue){
-        Signal<U> newSignal =  new Signal<>(null);
+        Signal<U> newSignal =  new Signal<>(startValue);
         Runnable oldAction = this.action;
         
         this.action = () -> {
-            oldAction.run();
+            if(oldAction != null) oldAction.run();
             if(newSignal.getValue() == null){
                 newSignal.setValue(startValue);
             }else{
