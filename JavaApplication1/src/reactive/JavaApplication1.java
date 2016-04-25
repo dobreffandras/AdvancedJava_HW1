@@ -41,13 +41,14 @@ public class JavaApplication1 {
                 }
         );
         
-        writerSignal.setAction(() -> {
+        writerSignal.map((line) -> {
             try {
-                writer.write(writerSignal.getValue());
+                writer.write(line);
                 writer.flush();
             } catch (IOException ex) {
                 Logger.getLogger(JavaApplication1.class.getName()).log(Level.SEVERE, null, ex);
             }
+            return line;
         });
         
         

@@ -34,7 +34,7 @@ public class Signal<T> {
         Signal newSignal = new Signal(function.apply(this.value));
         Runnable oldAction = this.action;
         this.action = () -> {
-            oldAction.run();
+            if(oldAction!= null) oldAction.run();
             newSignal.setValue(function.apply(this.value));
         };
         return newSignal;
